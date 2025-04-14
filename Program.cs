@@ -40,9 +40,14 @@ builder.Services.Configure<JWT>(jwtSettings);
 // تسجيل خدمة المصادقة
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// إضافة الـ Identity مع دعم الـ EF Core
+//// إضافة الـ Identity مع دعم الـ EF Core
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // إعداد الـ JWT Authentication
 builder.Services.AddAuthentication(options =>
