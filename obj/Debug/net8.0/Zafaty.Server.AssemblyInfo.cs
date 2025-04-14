@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Zafaty.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad41075bfccf39459f9c90aa11cafa3205ad7d2e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b9d8ceff26ecf91699dd8e88f1e286073297adbf")]
 [assembly: System.Reflection.AssemblyProductAttribute("Zafaty.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Zafaty.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
