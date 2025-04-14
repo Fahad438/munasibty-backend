@@ -1,0 +1,6 @@
+@Zafaty.Server_HostAddress = http://localhost:5281
+
+GET {{Zafaty.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "zUzTsivHQhUBc7sLNqk8wt3HLGsg3Q6WGL4I15vY1uU=",
+  "Source": "Zafaty.Server",
+  "BasePath": "_content/Zafaty.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Zafaty.Server.props" />
+</Project>
