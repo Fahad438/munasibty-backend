@@ -66,8 +66,35 @@ namespace Zafaty.Server.Controllers
 
             return Ok("Registration successful. Please check your email for verification link.");
         }
+        [HttpPost("resend-verification")]
+        public async Task<IActionResult> ResendVerificationToken([FromBody] string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return BadRequest("Email is required.");
 
-       
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                return NotFound("User not found.");
+
+            if (user.IsActive)
+                return BadRequest("Account already verified.");
+
+            // التحقق من انتهاء صلاحية التوكن
+            if (user.VerificationTokenExpiry > DateTime.UtcNow)
+                return BadRequest("Verification token is still valid. Please check your email.");
+
+            // إعادة إصدار توكن جديد
+            user.VerificationToken = Guid.NewGuid().ToString();
+            user.VerificationTokenExpiry = DateTime.UtcNow.AddHours(1);
+            await _db.SaveChangesAsync();
+
+            var verificationLink = $"{_config["App:BaseUrl"]}/verify-email/{user.VerificationToken}";
+            await SendVerificationEmail(user.Email, verificationLink);
+
+            return Ok("A new verification email has been sent.");
+        }
+
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto userDto)
@@ -120,7 +147,7 @@ namespace Zafaty.Server.Controllers
 
         }
        [HttpPost("forget-password")]
-public async Task<IActionResult> ForgetPassword([FromBody]string email)
+        public async Task<IActionResult> ForgetPassword([FromBody]string email)
 {
     var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
