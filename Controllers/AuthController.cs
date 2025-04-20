@@ -151,7 +151,7 @@ public async Task<IActionResult> ForgetPassword([FromBody]string email)
     var verificationLink = $"{_config["App:BaseUrl"]}/reast-password/{user.ResetToken}";
 
     // إرسال الرابط إلى البريد الإلكتروني للمستخدم
-    await SendVerificationEmail(user.Email, verificationLink);
+    await SendPasswordResetEmail(user.Email, verificationLink);
 
     return Ok("A new reset link has been sent to your email.");
 }
@@ -302,13 +302,13 @@ public async Task<IActionResult> ForgetPassword([FromBody]string email)
         private async Task SendVerificationEmail(string email, string verificationLink)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("zafty", "fahadkhalid606@gmail.com"));
+            message.From.Add(new MailboxAddress("monasabh", "imonasabh@gmail.com"));
             message.To.Add(new MailboxAddress("", email));
-            message.Subject = "Verify your email address";
+            message.Subject = "تفعيل عنوان بريدك الإلكتروني";
 
             var bodyBuilder = new BodyBuilder
             {
-                HtmlBody = $"<p>Click the link below to verify your email address:</p><p><a href='{verificationLink}'>Verify Email</a></p>"
+                HtmlBody = $"<p>مرحبًا،</p><p>شكراً لتسجيلك في موقعنا! من فضلك، اضغط على الرابط أدناه لتفعيل حسابك:</p><p><a href='{verificationLink}' style='background-color: #6D28D9; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>تفعيل البريد الإلكتروني</a></p><p>إذا لم تكن قد قمت بالتسجيل، يمكنك تجاهل هذه الرسالة.</p>"
             };
 
             message.Body = bodyBuilder.ToMessageBody();
@@ -319,7 +319,37 @@ public async Task<IActionResult> ForgetPassword([FromBody]string email)
                 {
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
                     await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync("fahadkhalid606@gmail.com", "nkyonupnxvnnsyhi");
+                    await client.AuthenticateAsync("imonasabh@gmail.com", "xrwuwtxdxgarspkm");
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending email: {ex.Message}");
+                }
+            }
+        }
+        private async Task SendPasswordResetEmail(string email, string resetLink)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Monasabh Support", "imonasabh@gmail.com"));
+            message.To.Add(new MailboxAddress("", email));
+            message.Subject = "إعادة تعيين كلمة المرور";
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = $"<p>مرحبًا،</p><p>لقد طلبت إعادة تعيين كلمة المرور الخاصة بك على موقعنا. من فضلك، اضغط على الرابط أدناه لإعادة تعيين كلمة المرور الخاصة بك:</p><p><a href='{resetLink}' style='background-color: #6D28D9; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>إعادة تعيين كلمة المرور</a></p><p>إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذه الرسالة.</p>"
+            };
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                try
+                {
+                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
+                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync("imonasabh@gmail.com", "xrwuwtxdxgarspkm");
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
                 }

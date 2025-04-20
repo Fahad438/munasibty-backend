@@ -15,7 +15,13 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// إضافة الخدمات إلى الـ container
+// قراءة القيم من Environment Variables
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key") ?? "fallback-key";
+var jwtIssuer = Environment.GetEnvironmentVariable("Jwt__Issuer") ?? "zafaty";
+var jwtAudience = Environment.GetEnvironmentVariable("Jwt__Audience") ?? "zafatyUsers";
 
 // تسجيل الـ Repositories والخدمات
 builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -33,23 +39,14 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
 builder.Services.AddScoped<IBudgetService, BudgetService>();
 
-// تسجيل إعدادات JWT
-var jwtSettings = builder.Configuration.GetSection("JWT");
-builder.Services.Configure<JWT>(jwtSettings);
-
 // تسجيل خدمة المصادقة
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-//// إضافة الـ Identity مع دعم الـ EF Core
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-                    ?? builder.Configuration.GetConnectionString("DefaultConnection");
-
+// إعداد DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// إعداد الـ JWT Authentication
+// إعداد JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -65,9 +62,9 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
 
@@ -83,6 +80,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader());
 });
 
+// إعداد Rate Limiting
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
     rateLimiterOptions.AddPolicy("UserRateLimit", httpContext =>
@@ -91,14 +89,13 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 
         return RateLimitPartition.GetFixedWindowLimiter(userId, _ => new FixedWindowRateLimiterOptions
         {
-            PermitLimit = 50, 
+            PermitLimit = 50,
             Window = TimeSpan.FromSeconds(60),
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
             QueueLimit = 2
         });
     });
 });
-
 
 // إضافة الخدمات للـ Controllers
 builder.Services.AddControllers().AddNewtonsoftJson();
@@ -118,7 +115,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAuthentication();
 app.UseAuthorization();
