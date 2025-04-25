@@ -346,7 +346,7 @@ namespace Zafaty.Server.Controllers
                 {
                     //client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
                     await client.ConnectAsync("smtp.zoho.sa", 465, SecureSocketOptions.SslOnConnect);
-                    await client.AuthenticateAsync("monasabh@zohomail.sa", "mon*asabh@rvrfg1234");
+                    await client.AuthenticateAsync("monasabh@zohomail.sa", "idzyMFQtPTxe");
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
                 }
@@ -376,7 +376,7 @@ namespace Zafaty.Server.Controllers
                 {
                     //client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
                     await client.ConnectAsync("smtp.zoho.sa", 465, SecureSocketOptions.SslOnConnect);
-                    await client.AuthenticateAsync("monasabh@zohomail.sa", "mon*asabh@rvrfg1234");
+                    await client.AuthenticateAsync("monasabh@zohomail.sa", "idzyMFQtPTxe");
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
                 }
