@@ -329,7 +329,7 @@ namespace Zafaty.Server.Controllers
         private async Task SendVerificationEmail(string email, string verificationLink)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("monasabh", "imonasabh@gmail.com"));
+            message.From.Add(new MailboxAddress("مناسبة", "monasabh@zohomail.sa"));
             message.To.Add(new MailboxAddress("", email));
             message.Subject = "تفعيل عنوان بريدك الإلكتروني";
 
@@ -344,9 +344,9 @@ namespace Zafaty.Server.Controllers
             {
                 try
                 {
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
-                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync("imonasabh@gmail.com", "xrwuwtxdxgarspkm");
+                    //client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
+                    await client.ConnectAsync("smtp.zoho.sa", 465, SecureSocketOptions.SslOnConnect);
+                    await client.AuthenticateAsync("monasabh@zohomail.sa", "mon*asabh@rvrfg1234");
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
                 }
@@ -359,7 +359,7 @@ namespace Zafaty.Server.Controllers
         private async Task SendPasswordResetEmail(string email, string resetLink)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Monasabh Support", "imonasabh@gmail.com"));
+            message.From.Add(new MailboxAddress("مناسبة", "monasabh@zohomail.sa"));
             message.To.Add(new MailboxAddress("", email));
             message.Subject = "إعادة تعيين كلمة المرور";
 
@@ -374,9 +374,9 @@ namespace Zafaty.Server.Controllers
             {
                 try
                 {
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
-                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync("imonasabh@gmail.com", "xrwuwtxdxgarspkm");
+                    //client.ServerCertificateValidationCallback = (s, c, h, e) => true;  // تجاهل التحقق من الشهادة
+                    await client.ConnectAsync("smtp.zoho.sa", 465, SecureSocketOptions.SslOnConnect);
+                    await client.AuthenticateAsync("monasabh@zohomail.sa", "mon*asabh@rvrfg1234");
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
                 }
